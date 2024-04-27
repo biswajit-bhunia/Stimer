@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        :root{
+            --progress: -100%;
+        }
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        #time{
+            font-size: 400px;
+            text-align: center;
+            border: 10px dashed rgb(59, 57, 57);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .bar{
+            width: 900px;
+            height: 20px;
+            background-color: rgb(174, 174, 172);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .bar::before{
+            content: '';
+            width: 100%;
+            height: 20px;
+            background-color: rgb(104, 107, 104);
+            position: absolute;
+            right: var(--progress);
+        }
+    </style>
+</head>
+<body>
+    <div id="time"></div>
+    <div class="bar"></div>
+    <script>
+        const root = document.documentElement;
+
+        const time = document.getElementById('time');
+
+        let hhmmss = prompt("Enter time in HH:MM:SS fromat")
+        let [hrs, min, sec] = hhmmss.split(':').map(Number);
+
+        let total_sec = (hrs * 60 * 60) + (min * 60) + sec
+        console.log(total_sec)
+        const formatTime = (value) => {
+            return value < 10 ? '0' + value : value;
+        };
+
+        time.innerHTML = `${formatTime(hrs)}:${formatTime(min)}:${formatTime(sec)}`;
+
+        let timerid = setInterval(() => {
+            if (sec === 0) {
+                if (min !== 0) {
+                    min--;
+                    sec = 59;
+                } else {
+                    if (hrs !== 0) {
+                        hrs--;
+                        min = 59;
+                        sec = 59;
+                    } else {
+                        clearInterval(timerid);
+                        root.style.setProperty('--progress', `-100%`);
+                        return;
+                    }
+                }
+            } else {
+                sec--;
+            }
+
+            time.innerHTML = `${formatTime(hrs)}:${formatTime(min)}:${formatTime(sec)}`;
+            let curr_sec = (hrs * 60 * 60) + (min * 60) + sec
+            let progress = (curr_sec/total_sec)*100
+            console.log(progress)
+
+            root.style.setProperty('--progress', `${progress}%`);
+
+        }, 1000);
+    </script>
+</body>
+</html>
